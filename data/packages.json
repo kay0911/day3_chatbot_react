@@ -1,0 +1,205 @@
+{
+  "packages": [
+    {
+      "id": "PKG-A",
+      "name": "Deluxe Room Ocean View (Room Only)",
+      "hotel": "Vinpearl Resort Nha Trang",
+      "location": "Nha Trang",
+      "room_type": "Deluxe Room Ocean View",
+      "price_per_night": 2500000,
+      "max_adults": 2,
+      "max_children": 2,
+      "includes": ["Room Only", "Private Beach Access", "Swimming Pool"],
+      "description": "Phòng Deluxe rộng rãi hướng biển tuyệt đẹp tại Vinpearl Resort Nha Trang. Thích hợp cho cặp đôi hoặc gia đình nhỏ."
+    },
+    {
+      "id": "PKG-B",
+      "name": "Deluxe Room Ocean View with Breakfast",
+      "hotel": "Vinpearl Resort Nha Trang",
+      "location": "Nha Trang",
+      "room_type": "Deluxe Room Ocean View",
+      "price_per_night": 3200000,
+      "max_adults": 2,
+      "max_children": 2,
+      "includes": ["Room", "Buffet Breakfast", "Private Beach Access", "Swimming Pool"],
+      "description": "Trọn gói phòng nghỉ hướng biển sang trọng và bữa sáng buffet tiêu chuẩn quốc tế tại Nhà hàng Imperial."
+    },
+    {
+      "id": "PKG-C",
+      "name": "Villa 2-Bedroom All-Inclusive with VinWonders",
+      "hotel": "Vinpearl Resort & Spa Nha Trang Bay",
+      "location": "Nha Trang",
+      "room_type": "Villa 2-Bedroom",
+      "price_per_night": 7500000,
+      "max_adults": 4,
+      "max_children": 2,
+      "includes": ["Room", "Full Board (3 Meals Buffet)", "VinWonders Ticket", "Private Pool", "Private Beach Access"],
+      "description": "Combo nghỉ dưỡng đẳng cấp cho gia đình 4 người tại Villa 2 phòng ngủ có hồ bơi riêng. Đã bao gồm ăn 3 bữa buffet mỗi ngày và vé vui chơi không giới hạn tại VinWonders Nha Trang."
+    },
+    {
+      "id": "PKG-D",
+      "name": "Villa 3-Bedroom Luxury Family Getaway",
+      "hotel": "Vinpearl Resort & Spa Nha Trang Bay",
+      "location": "Nha Trang",
+      "room_type": "Villa 3-Bedroom",
+      "price_per_night": 11000000,
+      "max_adults": 6,
+      "max_children": 3,
+      "includes": ["Room", "Buffet Breakfast", "VinWonders Ticket", "Private Pool", "Spa Discount 20%"],
+      "description": "Villa 3 phòng ngủ rộng lớn cho cả gia đình hoặc nhóm bạn. Bao gồm bữa sáng buffet sang trọng và vé tham quan VinWonders."
+    },
+    {
+      "id": "PKG-E",
+      "name": "Presidential Beachfront Villa with Butler Service",
+      "hotel": "Vinpearl Luxury Nha Trang",
+      "location": "Nha Trang",
+      "room_type": "Presidential Villa 2-Bedroom",
+      "price_per_night": 25000000,
+      "max_adults": 4,
+      "max_children": 2,
+      "includes": ["Room", "Private Butler Service", "Private Yacht Transfer", "Full Board Fine Dining", "Unlimited Akoya Spa", "Private Beachside Jacuzzi"],
+      "description": "Trải nghiệm kỳ nghỉ hoàng gia siêu sang trọng tại Biệt thự Tổng Thống sát biển. Có quản gia riêng phục vụ 24/7, đưa đón bằng du thuyền, ẩm thực cao cấp và spa không giới hạn."
+    },
+    {
+      "id": "PKG-F",
+      "name": "Deluxe Garden View Room (Budget Friendly)",
+      "hotel": "Vinpearl Resort Nha Trang",
+      "location": "Nha Trang",
+      "room_type": "Deluxe Room Garden View",
+      "price_per_night": 1900000,
+      "max_adults": 2,
+      "max_children": 2,
+      "includes": ["Room Only", "Private Beach Access", "Garden Walkway"],
+      "description": "Lựa chọn nghỉ dưỡng tiết kiệm tuyệt vời với phòng Deluxe hướng vườn dừa xanh mát thơ mộng, không khí yên bình trong lành."
+    },
+    {
+      "id": "PKG-G",
+      "name": "Grand Executive Suite Ocean View with Spa Credit",
+      "hotel": "Vinpearl Resort & Spa Nha Trang Bay",
+      "location": "Nha Trang",
+      "room_type": "Grand Executive Suite",
+      "price_per_night": 5500000,
+      "max_adults": 2,
+      "max_children": 2,
+      "includes": ["Room", "Buffet Breakfast", "500k Spa Credit", "Executive Lounge Access", "Sunset Cocktail Hour"],
+      "description": "Phòng Suite thượng hạng hướng toàn cảnh vịnh Nha Trang. Đi kèm phiếu quà tặng Spa trị giá 500.000 VNĐ và quyền vào phòng chờ thương gia với tiệc trà chiều, cocktail hoàng hôn."
+    },
+    {
+      "id": "PKG-H",
+      "name": "Villa 3-Bedroom All-Inclusive with VinWonders & Mud Bath",
+      "hotel": "Vinpearl Resort & Spa Nha Trang Bay",
+      "location": "Nha Trang",
+      "room_type": "Villa 3-Bedroom",
+      "price_per_night": 14500000,
+      "max_adults": 6,
+      "max_children": 3,
+      "includes": ["Room", "Full Board (3 Meals Buffet)", "VinWonders Ticket", "Hon Tam Mud Bath Voucher", "Private Pool", "Private Beach Access"],
+      "description": "Gói Villa 3 phòng ngủ đầy đủ nhất cho cả gia đình lớn. Đã bao gồm trọn gói ăn 3 bữa, vé vui chơi VinWonders và phiếu tắm bùn khoáng nóng thư giãn tại Đảo Hòn Tằm."
+    },
+    {
+      "id": "PKG-I",
+      "name": "Deluxe Garden View with Breakfast",
+      "hotel": "Vinpearl Resort Nha Trang",
+      "location": "Nha Trang",
+      "room_type": "Deluxe Room Garden View",
+      "price_per_night": 2600000,
+      "max_adults": 2,
+      "max_children": 2,
+      "includes": ["Room", "Buffet Breakfast", "Private Beach Access", "Swimming Pool"],
+      "description": "Phòng nghỉ Deluxe hướng vườn yên tĩnh kèm bữa sáng buffet tiêu chuẩn Á-Âu thanh lịch mỗi sáng."
+    }
+  ],
+  "attractions": [
+    {
+      "name": "VinWonders Nha Trang",
+      "type": "Amusement Park",
+      "location": "Đảo Hòn Tre, Nha Trang",
+      "description": "Công viên chủ đề đẳng cấp thế giới với vòng quay bánh xe bầu trời, cáp treo vượt biển, công viên nước, vịnh phao nổi và phân khu trò chơi cảm giác mạnh phiêu lưu.",
+      "distance": "0 km (Ngay tại đảo Hòn Tre)"
+    },
+    {
+      "name": "Tata Show",
+      "type": "Show",
+      "location": "Quảng trường Thần thoại, VinWonders Nha Trang",
+      "description": "Siêu phẩm thực cảnh đa phương tiện đẳng cấp quốc tế, biểu diễn vào lúc 19:30 hàng ngày với hiệu ứng 3D mapping hoành tráng, âm thanh ánh sáng đỉnh cao và hàng trăm diễn viên múa.",
+      "distance": "0 km (Trong VinWonders)"
+    },
+    {
+      "name": "Nhà hàng Imperial",
+      "type": "Restaurant",
+      "location": "Tầng 1, Vinpearl Resort Nha Trang",
+      "description": "Nhà hàng buffet phục vụ ẩm thực Á - Âu tinh tế, hải sản Nha Trang tươi ngon, sở hữu không gian hoàng gia ấm cúng hướng ra hồ bơi chính và biển khơi.",
+      "distance": "0.1 km (Trong khu resort)"
+    },
+    {
+      "name": "Akoya Spa",
+      "type": "Spa",
+      "location": "Vinpearl Resort & Spa Nha Trang Bay",
+      "description": "Thương hiệu spa cao cấp lấy cảm hứng từ liệu pháp trị liệu tinh túy của Bali. Các chòi spa bằng gỗ nằm ngay trên mặt hồ nước trong vắt hoặc bên bờ biển rì rào sóng vỗ.",
+      "distance": "0.2 km"
+    },
+    {
+      "name": "Viện Hải dương học Nha Trang",
+      "type": "Museum",
+      "location": "Số 1 Cầu Đá, Nha Trang (đất liền)",
+      "description": "Bảo tàng sinh vật biển lâu đời nhất Việt Nam với hàng ngàn mẫu vật sinh vật biển độc đáo, bể cá lớn nuôi rùa biển, san hô, cá mập.",
+      "distance": "5 km (Đi bằng tàu cao tốc vào đất liền)"
+    },
+    {
+      "name": "Bãi biển Tropicana",
+      "type": "Beach",
+      "location": "Vinpearl Resort Nha Trang",
+      "description": "Bãi cát trắng mịn trải dài tuyệt đẹp ôm lấy vịnh Nha Trang xanh ngắt. Nơi lý tưởng để ngắm hoàng hôn, chèo thuyền kayak hoặc thưởng thức cocktail tại quầy bar sát biển.",
+      "distance": "0 km"
+    },
+    {
+      "name": "Chùa Long Sơn",
+      "type": "Cultural",
+      "location": "20 Đường 23 Tháng 10, Nha Trang",
+      "description": "Ngôi chùa cổ kính hơn trăm năm tuổi nổi tiếng với bức tượng Kim Thân Phật Tổ (Tượng Phật Trắng) khổng lồ ngự trên đỉnh đồi Trại Thủy, từ đây có thể ngắm toàn cảnh thành phố Nha Trang.",
+      "distance": "7 km (Đi tàu cao tốc rồi đi taxi trên đất liền)"
+    },
+    {
+      "name": "Tháp Bà Ponagar",
+      "type": "Cultural",
+      "location": "Đường Hai Tháng Tư, Nha Trang",
+      "description": "Quần thể di tích đền tháp Chăm Pa cổ kính được xây dựng từ thế kỷ thứ 8 đến thế kỷ 13, thờ nữ thần Thiên Y A Na Thánh Mẫu. Nơi lưu giữ giá trị nghệ thuật kiến trúc và điêu khắc Chăm Pa độc đáo.",
+      "distance": "8 km (Di chuyển vào đất liền bằng tàu cao tốc và taxi)"
+    },
+    {
+      "name": "Chợ Đầm Nha Trang",
+      "type": "Shopping",
+      "location": "Bến Chợ, Vạn Thạnh, Nha Trang",
+      "description": "Khu chợ trung tâm lớn nhất Nha Trang với kiến trúc hình đóa hoa sen độc đáo. Địa điểm lý tưởng để mua sắm hải sản khô, quà lưu niệm, đồ thủ công mỹ nghệ và thưởng thức ẩm thực đường phố đặc sản Khánh Hòa.",
+      "distance": "6.5 km"
+    },
+    {
+      "name": "Imperial Club Nha Trang",
+      "type": "Entertainment",
+      "location": "Đảo Hòn Tre, Nha Trang",
+      "description": "Trung tâm giải trí hoàng gia hội tụ chuỗi nhà hàng cao cấp (nhà hàng Trung Hoa bách vị, nhà hàng hải sản), sàn nhảy, phòng karaoke sang trọng và khu trò chơi bowling hiện đại.",
+      "distance": "0.3 km"
+    },
+    {
+      "name": "Cáp treo Hòn Tre",
+      "type": "Transport",
+      "location": "Cảng Cầu Đá - Đảo Hòn Tre",
+      "description": "Hệ thống cáp treo vượt biển nổi tiếng với tầm nhìn toàn cảnh ngoạn mục 360 độ từ trên cao ôm trọn vịnh Nha Trang xinh đẹp.",
+      "distance": "0 km"
+    },
+    {
+      "name": "Mud Bath Hòn Tằm (Tắm bùn Merperle)",
+      "type": "Spa",
+      "location": "Đảo Hòn Tằm, Nha Trang",
+      "description": "Khu phức hợp tắm bùn khoáng nóng trên đảo lớn nhất Việt Nam. Bao gồm hồ bùn khoáng vô cực rộng lớn, massage ôn tuyền thủy liệu pháp và thưởng thức buffet dân dã.",
+      "distance": "3 km (Di chuyển bằng cano cao tốc)"
+    },
+    {
+      "name": "Sailing Club Nha Trang",
+      "type": "Restaurant",
+      "location": "72-74 Trần Phú, Lộc Thọ, Nha Trang",
+      "description": "Câu lạc bộ bãi biển mang phong cách Địa Trung Hải sôi động trên đường Trần Phú. Phục vụ món ăn Ý, hải sản nướng, quầy bar sát biển ngoài trời với nhạc DJ sống động về đêm.",
+      "distance": "6 km (Đi tàu vào đất liền)"
+    }
+  ]
+}
