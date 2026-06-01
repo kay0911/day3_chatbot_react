@@ -1,0 +1,50 @@
+[
+  {
+    "id": "PKG-A",
+    "name": "Deluxe Room Ocean View (Room Only)",
+    "hotel": "Vinpearl Resort Nha Trang",
+    "location": "Nha Trang",
+    "room_type": "Deluxe Room Ocean View",
+    "price_per_night": 1500000,
+    "max_adults": 2,
+    "max_children": 1,
+    "includes": ["Room Only", "Private Beach Access", "Swimming Pool"],
+    "blocked_dates": ["2026-06-05", "2026-06-06"]
+  },
+  {
+    "id": "PKG-B",
+    "name": "Deluxe Room Ocean View with Breakfast",
+    "hotel": "Vinpearl Resort Nha Trang",
+    "location": "Nha Trang",
+    "room_type": "Deluxe Room Ocean View",
+    "price_per_night": 2000000,
+    "max_adults": 2,
+    "max_children": 1,
+    "includes": ["Breakfast", "Private Beach Access", "Swimming Pool"],
+    "blocked_dates": []
+  },
+  {
+    "id": "PKG-C",
+    "name": "Villa 3-Bedroom Ocean View with VinWonders ticket",
+    "hotel": "Vinpearl Resort & Spa Nha Trang Bay",
+    "location": "Nha Trang",
+    "room_type": "3-Bedroom Villa",
+    "price_per_night": 5000000,
+    "max_adults": 6,
+    "max_children": 3,
+    "includes": ["Breakfast", "VinWonders", "Private Pool", "Private Beach Access"],
+    "blocked_dates": ["2026-06-10"]
+  },
+  {
+    "id": "PKG-D",
+    "name": "Grand Deluxe Room Garden View",
+    "hotel": "Vinpearl Luxury Nha Trang",
+    "location": "Nha Trang",
+    "room_type": "Grand Deluxe Garden View",
+    "price_per_night": 3500000,
+    "max_adults": 2,
+    "max_children": 2,
+    "includes": ["Breakfast", "Airport Shuttle", "Spa Voucher"],
+    "blocked_dates": ["2026-06-01", "2026-06-02"]
+  }
+]

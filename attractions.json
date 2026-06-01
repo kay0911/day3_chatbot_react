@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ATTR-A",
+    "name": "VinWonders Nha Trang",
+    "type": "show",
+    "location": "Nha Trang",
+    "description": "Amusement park with grand music shows and roller coasters"
+  },
+  {
+    "id": "ATTR-B",
+    "name": "Akoya Spa",
+    "type": "spa",
+    "location": "Nha Trang",
+    "description": "Premium Balinese spa treatments"
+  },
+  {
+    "id": "ATTR-C",
+    "name": "Vinpearl Golf Nha Trang",
+    "type": "golf",
+    "location": "Nha Trang",
+    "description": "18-hole championship golf course"
+  },
+  {
+    "id": "ATTR-D",
+    "name": "Tata Show",
+    "type": "show",
+    "location": "Nha Trang",
+    "description": "World-class multimedia live show at VinWonders"
+  },
+  {
+    "id": "ATTR-E",
+    "name": "Imperial Club Spa",
+    "type": "spa",
+    "location": "Nha Trang",
+    "description": "Luxury wellness and spa center"
+  }
+]
