@@ -22,13 +22,28 @@ def test_local_phi3():
     try:
         provider = LocalProvider(model_path=model_path)
         
-        prompt = "Explain what an AI Agent is in one sentence."
-        print(f"\nUser: {prompt}")
-        print("Assistant: ", end="", flush=True)
+        print("\n" + "="*50)
+        print("🤖 CHAT TRỰC TIẾP VỚI LOCAL MODEL PHI-3 (OFFLINE)")
+        print("Nhập câu hỏi của bạn dưới đây. Gõ 'exit' hoặc 'quit' để thoát.")
+        print("="*50 + "\n")
         
-        for chunk in provider.stream(prompt):
-            print(chunk, end="", flush=True)
-        print("\n\n✅ Local Provider is working correctly!")
+        while True:
+            try:
+                prompt = input("\nUser: ").strip()
+                if not prompt:
+                    continue
+                if prompt.lower() in ["exit", "quit"]:
+                    print("Tạm biệt!")
+                    break
+                    
+                print("Assistant: ", end="", flush=True)
+                for chunk in provider.stream(prompt):
+                    print(chunk, end="", flush=True)
+                print()
+                
+            except KeyboardInterrupt:
+                print("\nTạm biệt!")
+                break
         
     except Exception as e:
         print(f"\n❌ Error during execution: {e}")
