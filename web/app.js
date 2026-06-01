@@ -5,9 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const stepsContainer = document.getElementById("steps-container");
     const emptyTelemetry = document.getElementById("empty-telemetry");
 
+
+    const SESSION_KEY = "vinpearl_chat_session";
+
+    // Load chat history from sessionStorage
+    let chatHistory = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "[]");
+
+    // Restore previous messages on page load
+    chatHistory.forEach(msg => {
+        appendMessage(msg.content, msg.role === "user" ? "user" : "assistant");
+    });
+
     let chatHistory = [];
-    //Fix
-    // Send Message
+
     async function sendMessage(text) {
         if (!text.trim()) return;
 
@@ -24,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
         emptyTelemetry.style.display = "none";
 
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000);
+
             const response = await fetch("/api/chat", {
                 method: "POST",
                 headers: {
@@ -32,8 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ 
                     message: text,
                     history: chatHistory
-                })
+                }),
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error("Không thể kết nối đến Web Server.");
@@ -56,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (chatHistory.length > 10) {
                     chatHistory.splice(0, 2);
                 }
+                sessionStorage.setItem(SESSION_KEY, JSON.stringify(chatHistory));
             } else {
                 appendMessage("Xin lỗi, tôi gặp sự cố khi suy luận câu trả lời.", "assistant");
             }
@@ -71,7 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error(error);
             typingIndicator.remove();
-            appendMessage(`❌ Lỗi: ${error.message}. Hãy chắc chắn rằng Web Server đang chạy tại cổng 5000.`, "assistant");
+            if (error.name === "AbortError") {
+                appendMessage("⏳ Hệ thống đang gặp sự cố, phản hồi quá lâu (hơn 60 giây). Bạn thông cảm và thử lại sau nhé!", "assistant");
+            } else {
+                appendMessage(`❌ Lỗi: ${error.message}. Hãy chắc chắn rằng Web Server đang chạy tại cổng 5000.`, "assistant");
+            }
             emptyTelemetry.style.display = "flex";
         }
     }
