@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stepsContainer = document.getElementById("steps-container");
     const emptyTelemetry = document.getElementById("empty-telemetry");
 
+
     const SESSION_KEY = "vinpearl_chat_session";
 
     // Load chat history from sessionStorage
@@ -15,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         appendMessage(msg.content, msg.role === "user" ? "user" : "assistant");
     });
 
-    // Send Message
+    let chatHistory = [];
+
     async function sendMessage(text) {
         if (!text.trim()) return;
 
