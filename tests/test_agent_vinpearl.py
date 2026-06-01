@@ -56,7 +56,7 @@ def test_vinpearl_react_agent():
         },
         {
             "name": "filter_packages",
-            "description": "filter_packages(packages: List[dict], includes: List[str]) -> Lọc danh sách combo theo các tiện ích bắt buộc phải có (ví dụ: ['VinWonders']). Yêu cầu đối số 'packages' phải là kết quả trả về từ hàm search_vinpearl_packages.",
+            "description": "filter_packages(location: str, adults: int, children: int, includes: List[str]) -> Tìm kiếm và lọc combo nghỉ dưỡng Vinpearl theo sức chứa và các tiện ích bắt buộc phải có (ví dụ: includes=['VinWonders', 'Buffet Breakfast']).",
             "func": filter_packages
         },
         {

@@ -160,17 +160,28 @@ def search_nearby_attractions(location: str = "Nha Trang", attraction_type: str 
             
     return matching_attractions
 
-def filter_packages(packages: List[Dict[str, Any]], includes: List[str]) -> List[Dict[str, Any]]:
+def filter_packages(location: str = "Nha Trang", adults: int = 2, children: int = 0, includes: List[str] = None) -> List[Dict[str, Any]]:
     """
-    Lọc danh sách các combo dựa trên danh sách các tiện ích đi kèm bắt buộc (ví dụ: 'VinWonders', 'Buffet Breakfast').
+    Tìm kiếm và lọc các gói combo nghỉ dưỡng Vinpearl có chứa đầy đủ các tiện ích bắt buộc (ví dụ: 'VinWonders', 'Buffet Breakfast').
     
     Args:
-        packages: Danh sách gói combo cần lọc (thường là kết quả từ search_vinpearl_packages hoặc search_rooms).
-        includes: Danh sách các tiện ích bắt buộc phải có trong 'includes' (không phân biệt hoa thường).
+        location: Địa điểm tìm kiếm (ví dụ: 'Nha Trang').
+        adults: Số người lớn.
+        children: Số trẻ em.
+        includes: Danh sách các tiện ích bắt buộc phải có (không phân biệt hoa thường). Ví dụ: ['VinWonders', 'Spa'].
         
     Returns:
-        Danh sách combo đã lọc thỏa mãn đầy đủ các tiện ích đi kèm.
+        Danh sách combo thỏa mãn sức chứa và đầy đủ các tiện ích đi kèm.
     """
+    if includes is None:
+        includes = []
+    
+    # Tự động tìm kiếm packages phù hợp sức chứa trước
+    packages = search_vinpearl_packages(location=location, adults=adults, children=children)
+    
+    if not includes:
+        return packages
+    
     filtered = []
     for pkg in packages:
         pkg_includes = [inc.lower() for inc in pkg.get("includes", [])]
@@ -204,6 +215,8 @@ def generate_itinerary(duration_days: int = 3, location: str = "Vinpearl Resort 
     """
     if key_activities is None:
         key_activities = []
+    else:
+        key_activities = list(key_activities)  # Copy to avoid mutating the original list
         
     itinerary = []
     
