@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const emptyTelemetry = document.getElementById("empty-telemetry");
 
     let chatHistory = [];
-
+    //Fix
     // Send Message
     async function sendMessage(text) {
         if (!text.trim()) return;
