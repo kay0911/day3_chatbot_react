@@ -110,10 +110,11 @@
 
         .container {
             display: flex;
+            justify-content: center; /* Căn giữa khung chat duy nhất */
             flex: 1;
             overflow: hidden;
             width: 100%;
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 1.5rem;
             gap: 1.5rem;
@@ -131,15 +132,17 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             transition: all 0.3s ease;
+            min-height: 0; /* Sửa lỗi tràn màn hình Flexbox */
         }
 
         .chat-panel {
-            flex: 1.2;
+            flex: 1;
+            max-width: 900px; /* Chiều rộng vàng cho trải nghiệm chat tối ưu */
+            width: 100%;
         }
 
         .agent-panel {
-            flex: 0.8;
-            background: rgba(10, 15, 30, 0.8);
+            display: none !important; /* Ẩn hoàn toàn bảng điều khiển ReAct */
         }
 
         .panel-header {
@@ -223,23 +226,87 @@
             border-bottom-left-radius: 4px;
         }
 
-        .message.assistant h3 {
+        .message.assistant h1,
+        .message.assistant h2,
+        .message.assistant h3,
+        .message.assistant h4,
+        .message.assistant h5,
+        .message.assistant h6 {
             font-family: 'Outfit', sans-serif;
             color: #2dd4bf;
+            margin-top: 1rem;
             margin-bottom: 0.5rem;
         }
 
         .message.assistant p {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
         }
         
         .message.assistant ul, .message.assistant ol {
-            padding-left: 1.25rem;
-            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .message.assistant li {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+
+        /* Tables styling inside chat bubbles */
+        .message.assistant table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .message.assistant th, .message.assistant td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .message.assistant th {
+            background: rgba(13, 148, 136, 0.25);
+            color: #2dd4bf;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .message.assistant tr:last-child td {
+            border-bottom: none;
+        }
+
+        .message.assistant tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Token Usage Info Styling */
+        .message-usage {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.8rem;
+            padding-top: 0.6rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.2px;
+        }
+
+        .message-usage strong {
+            color: var(--accent-cyan);
+            margin: 0 3px;
+            font-weight: 600;
         }
 
         .typing-indicator {
@@ -435,6 +502,32 @@
             white-space: pre-wrap;
         }
 
+        .step-content.action-content {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #818cf8;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid #818cf8;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 4px 0;
+            overflow-x: auto;
+        }
+
+        .step-content.observation-content {
+            max-height: 240px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.35);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #34d399;
+            border-left: 3px solid #0d9488;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 4px 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
         .step-content code {
             font-family: monospace;
             background: rgba(0, 0, 0, 0.3);
@@ -546,6 +639,7 @@
     </div>
 
     <!-- Script connection -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

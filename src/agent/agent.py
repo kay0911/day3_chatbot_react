@@ -11,10 +11,11 @@ class ReActAgent:
     Students should implement the core loop logic and tool execution.
     """
     
-    def __init__(self, llm: LLMProvider, tools: List[Dict[str, Any]], max_steps: int = 5):
+    def __init__(self, llm: LLMProvider, tools: List[Dict[str, Any]], max_steps: int = 5, max_tool_calls: int = 3):
         self.llm = llm
         self.tools = tools
         self.max_steps = max_steps
+        self.max_tool_calls = max_tool_calls
         self.history = []
 
     def get_system_prompt(self) -> str:
@@ -22,32 +23,37 @@ class ReActAgent:
         Trả về system prompt chi tiết hướng dẫn LLM cách suy nghĩ và hành động theo mô hình ReAct.
         """
         tool_descriptions = "\n".join([f"- {t['name']}: {t['description']}" for t in self.tools])
-        return f"""Bạn là một Trợ lý Du lịch thông minh, chuyên nghiệp chuyên hỗ trợ đặt phòng và thiết kế lịch trình tại hệ thống nghỉ dưỡng Vinpearl Nha Trang.
-Bạn có quyền truy cập vào các công cụ (tools) sau để trả lời câu hỏi của khách hàng một cách chính xác nhất:
+        return f"""Bạn là một Trợ lý Du lịch thông minh, chuyên nghiệp và tận tâm tại hệ thống nghỉ dưỡng Vinpearl Nha Trang.
+Bạn có quyền truy cập vào các công cụ (tools) sau để tìm kiếm dữ liệu thực tế và hỗ trợ khách hàng:
 
 {tool_descriptions}
 
-NGUYÊN TẮC GIỚI HẠN PHẠM VI (GUARDRAILS & ON-TOPIC ONLY):
-- Bạn CHỈ ĐƯỢC PHÉP hỗ trợ và trả lời các câu hỏi liên quan trực tiếp đến dịch vụ nghỉ dưỡng, phòng ở, biệt thự, ăn uống, spa, đi lại, địa điểm giải trí và lịch trình du lịch tại Vinpearl Nha Trang.
-- Tuyệt đối KHÔNG trả lời bất kỳ câu hỏi nào ngoài phạm vi trên (ví dụ: làm toán, viết code, dịch thuật văn bản chung, hỏi đáp kiến thức khoa học chung, chính trị, tư vấn công nghệ, công thức nấu ăn không liên quan...).
-- Nếu khách hàng đặt câu hỏi ngoài phạm vi, bạn PHẢI từ chối ngay lập tức ở lượt trả lời đầu tiên mà không sử dụng bất kỳ công cụ nào, bằng cách đưa ra Final Answer trực tiếp với nội dung:
+📅 BỐI CẢNH THỜI GIAN THỰC TẾ:
+- Hôm nay là thứ Hai, **2026-06-01** (ngày 1 tháng 6 năm 2026).
+- Mọi mốc thời gian tương đối do khách hàng đưa ra phải được quy đổi chính xác dựa trên ngày hôm nay. Ví dụ:
+  + "Cuối tuần tới": Thứ Sáu 2026-06-05 đến Chủ Nhật 2026-06-07 (vì hôm nay là đầu tuần ngày 01/06/2026).
+  + "Cuối tuần này": Thứ Sáu 2026-06-05 đến Chủ Nhật 2026-06-07.
+  + "Ngày mai": 2026-06-02.
+
+🛡️ NGUYÊN TẮC GIỚI HẠN PHẠM VI (GUARDRAILS & ON-TOPIC ONLY):
+- Bạn CHỈ hỗ trợ và trả lời các chủ đề về dịch vụ nghỉ dưỡng, phòng nghỉ, biệt thự, ăn uống, spa, đi lại, địa điểm giải trí và lịch trình du lịch tại Vinpearl Nha Trang.
+- Tuyệt đối KHÔNG hỗ trợ các chủ đề ngoài luồng (như làm toán, viết code, dịch thuật văn bản chung, khoa học công nghệ, chính trị, công thức nấu ăn không liên quan...).
+- Đối với bất kỳ câu hỏi ngoài chủ đề, bạn PHẢI từ chối ngay lập tức ở lượt suy nghĩ đầu tiên mà không sử dụng bất kỳ công cụ nào bằng cú pháp Final Answer trực tiếp:
   "Tôi là Trợ lý ảo hỗ trợ đặt phòng và thiết kế lịch trình chuyên nghiệp tại Vinpearl Nha Trang. Tôi chỉ có thể hỗ trợ các thông tin liên quan đến dịch vụ nghỉ dưỡng, ẩm thực, vui chơi và lịch trình du lịch tại Vinpearl Nha Trang. Xin vui lòng đặt các câu hỏi liên quan đến chủ đề này!"
 
-QUY TRÌNH SUY NGHĨ VÀ SUY LUẬN (ReAct Loop):
-Khi nhận được câu hỏi từ khách hàng và câu hỏi đó ĐÚNG CHỦ ĐỀ, bạn PHẢI thực hiện suy luận từng bước theo định dạng nghiêm ngặt sau. Tuyệt đối không được gộp nhiều bước hoặc tự tạo kết quả Observation:
+🔄 QUY TRÌNH SUY LUẬN REACT NGHIÊM NGẶT (Thought-Action-Observation):
+Nếu câu hỏi ĐÚNG CHỦ ĐỀ, bạn bắt buộc phải suy luận và thu thập dữ liệu qua từng bước. Định dạng mỗi bước phải tuân thủ chính xác 100% cú pháp sau:
 
-Thought: [Dòng suy nghĩ của bạn để giải quyết câu hỏi ở bước này. Bạn cần phân tích xem cần thông tin gì và chọn công cụ nào phù hợp]
+Thought: [Dòng suy nghĩ của bạn. Bạn phân tích xem khách hàng cần gì, dữ liệu nào đang thiếu và chọn công cụ nào phù hợp nhất để gọi]
 Action: tên_công_cụ(tham_số_1="giá_trị", tham_số_2=giá_trị)
-Observation: [Hệ thống sẽ tự động chạy công cụ và trả về kết quả ở đây. Bạn tuyệt đối KHÔNG ĐƯỢC tự viết phần này]
+Observation: [Kết quả phản hồi thực tế từ hệ thống. Bạn KHÔNG ĐƯỢC tự viết phần này, hệ thống sẽ tự trả về]
 
-Bạn sẽ lặp lại chu kỳ trên từng bước một. CHỈ khi nào bạn đã nhận được đầy đủ kết quả thực tế từ phần Observation và có câu trả lời chính xác, bạn mới được đưa ra câu trả lời cuối cùng bằng định dạng:
-
-Final Answer: [Nội dung câu trả lời hoàn chỉnh, chi tiết, chính xác dựa trên dữ liệu thật và thân thiện dành cho khách hàng]
-
-LƯU Ý CỰC KỲ QUAN TRỌNG:
-- Ở mỗi lượt trả lời, bạn chỉ được viết duy nhất 1 cặp Thought và Action. Hãy dừng lại ngay sau khi viết xong dòng Action để hệ thống thực thi công cụ và trả về Observation. Tuyệt đối KHÔNG viết sẵn Observation hay Final Answer nếu chưa có kết quả thật từ công cụ.
-- Trả lời trung thực dựa trên kết quả trả về của công cụ. Không được tự bịa ra thông tin phòng hay mức giá không có trong dữ liệu thật.
-- Trong phần Action, bạn phải ghi đúng cú pháp gọi hàm Python. Ví dụ: `search_rooms(location="Nha Trang", max_price=5000000, adults=2)`
+⚠️ LƯU Ý QUAN TRỌNG VỀ ĐỊNH DẠNG PHẢN HỒI:
+1. Ở mỗi lượt trả lời, bạn CHỈ ĐƯỢC viết duy nhất 1 cặp Thought và Action. Hãy DỪNG viết ngay sau dấu ngoặc đóng `)` của dòng Action để hệ thống thực thi công cụ và trả về Observation. Tuyệt đối không được viết trước Observation hay viết trước Final Answer nếu chưa chạy công cụ.
+2. Tuyệt đối KHÔNG bao bọc cú pháp dòng Action trong bất kỳ ký tự Markdown nào (không dùng ```python hay ```json hay ` xung quanh Action). Ví dụ viết đúng:
+   Action: search_rooms(location="Nha Trang", max_price=5000000, adults=2)
+3. Bạn CHỈ được đưa ra câu trả lời cuối cùng khi đã hoàn thành việc gọi công cụ và có đầy đủ dữ liệu thực tế:
+   Final Answer: [Câu trả lời hoàn chỉnh, trình bày đẹp mắt bằng Markdown, thân thiện, trung thực dựa trên kết quả thật của Observation. Hãy so sánh giá các phòng, làm nổi bật inclusions và chèn bảng lịch trình du lịch cụ thể]
 """
 
     def run(self, user_input: str) -> Dict[str, Any]:
@@ -65,7 +71,11 @@ LƯU Ý CỰC KỲ QUAN TRỌNG:
         steps_taken = []
         
         steps = 0
+        tool_calls_count = 0
         final_answer = ""
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
+        total_tokens = 0
         
         while steps < self.max_steps:
             steps += 1
@@ -78,6 +88,13 @@ LƯU Ý CỰC KỲ QUAN TRỌNG:
             llm_response = self.llm.generate(current_context, system_prompt=self.get_system_prompt())
             content = llm_response.get("content", "").strip()
             logger.log_event("LLM_CALL_END", {"step": steps, "latency_ms": llm_response.get("latency_ms")})
+            
+            # Tích lũy số lượng token tiêu thụ từ phản hồi của LLM
+            usage = llm_response.get("usage", {})
+            if usage:
+                total_prompt_tokens += usage.get("prompt_tokens", 0)
+                total_completion_tokens += usage.get("completion_tokens", 0)
+                total_tokens += usage.get("total_tokens", 0)
             
             # Tách Thought (chấp nhận cả định dạng "1. Thought:" hoặc "Thought:")
             thought_match = re.search(r"(?:\d+\.)?\s*Thought(?:\s*\d+)?:?\s*(.*?)(?=(?:\d+\.)?\s*Action|Final Answer|$)", content, re.DOTALL | re.IGNORECASE)
@@ -104,9 +121,15 @@ LƯU Ý CỰC KỲ QUAN TRỌNG:
                 tool_name, tool_args = self._parse_action(action_str)
                 
                 if tool_name:
-                    logger.log_event("TOOL_EXECUTION_START", {"tool": tool_name, "args": tool_args})
-                    observation = self._execute_tool(tool_name, tool_args)
-                    logger.log_event("TOOL_EXECUTION_END", {"tool": tool_name, "observation_summary": str(observation)[:120]})
+                    # Kiểm tra và ngăn chặn nếu vượt quá giới hạn gọi Tool trong phiên chạy
+                    if tool_calls_count >= self.max_tool_calls:
+                        logger.log_event("TOOL_CALL_LIMIT_REACHED", {"limit": self.max_tool_calls})
+                        observation = f"Hệ thống cảnh báo: Bạn đã đạt giới hạn gọi công cụ tối đa ({self.max_tool_calls} lần). Bạn không được gọi thêm bất kỳ công cụ nào khác lúc này. Hãy đưa ra câu trả lời Final Answer tốt nhất ngay lập tức cho khách hàng dựa trên những thông tin bạn đã tìm thấy ở các bước trước."
+                    else:
+                        tool_calls_count += 1
+                        logger.log_event("TOOL_EXECUTION_START", {"tool": tool_name, "args": tool_args})
+                        observation = self._execute_tool(tool_name, tool_args)
+                        logger.log_event("TOOL_EXECUTION_END", {"tool": tool_name, "observation_summary": str(observation)[:120]})
                 else:
                     observation = f"Lỗi cú pháp gọi công cụ: '{action_str}'. Vui lòng gọi lại theo định dạng chính xác: tool_name(key1=value1, key2=value2)."
                     
@@ -140,62 +163,117 @@ LƯU Ý CỰC KỲ QUAN TRỌNG:
         return {
             "answer": final_answer,
             "steps": steps_taken,
-            "total_steps": steps
+            "total_steps": steps,
+            "usage": {
+                "prompt_tokens": total_prompt_tokens,
+                "completion_tokens": total_completion_tokens,
+                "total_tokens": total_tokens
+            }
         }
 
     def _parse_action(self, action_str: str) -> tuple:
         """
         Bóc tách tên tool và các đối số từ chuỗi gọi tool dạng: tool_name(key1="val1", key2=val2)
+        Sử dụng AST (Abstract Syntax Tree) để phân tích cú pháp an toàn và chính xác, 
+        kết hợp tìm kiếm tên tool hợp lệ để bỏ qua các đoạn text rác xung quanh.
         """
-        # Trích xuất tên tool và chuỗi chứa đối số
-        match = re.match(r"(\w+)\s*\((.*)\)", action_str, re.DOTALL)
-        if not match:
-            return None, {}
-            
-        tool_name = match.group(1)
-        args_str = match.group(2).strip()
+        import ast
+
+        # Làm sạch các ký tự lạ, khoảng trắng hoặc code block dư thừa xung quanh chuỗi gọi hàm
+        action_str = action_str.strip().replace("`", "")
+
+        # 1. Tìm xem có tên tool hợp lệ nào được gọi không
+        tool_name = None
+        args_str = ""
+        first_paren = -1
         
+        for t in self.tools:
+            t_name = t['name']
+            # Tìm pattern: tên tool theo sau bởi khoảng trắng tùy ý và dấu (
+            pattern = rf"\b{t_name}\s*\("
+            match = re.search(pattern, action_str)
+            if match:
+                tool_name = t_name
+                first_paren = match.end() - 1
+                break
+                
+        if not tool_name:
+            # Fallback: nếu không tìm thấy tool trong danh sách, thử tìm chữ đầu tiên trước dấu (
+            first_paren = action_str.find("(")
+            if first_paren != -1:
+                potential_name = action_str[:first_paren].strip()
+                # Lấy từ cuối cùng trong potential_name làm tên tool
+                words = re.findall(r"\b\w+\b", potential_name)
+                if words:
+                    tool_name = words[-1]
+            
+        if not tool_name or first_paren == -1:
+            return None, {}
+
+        # 2. Tìm ngoặc đơn đóng tương ứng (Paren-Depth Tracking) để lấy chuỗi đối số chính xác
+        paren_depth = 1
+        last_paren = -1
+        for idx in range(first_paren + 1, len(action_str)):
+            if action_str[idx] == "(":
+                paren_depth += 1
+            elif action_str[idx] == ")":
+                paren_depth -= 1
+                if paren_depth == 0:
+                    last_paren = idx
+                    break
+                    
+        if last_paren == -1:
+            # Fallback nếu thiếu ngoặc đóng
+            args_str = action_str[first_paren + 1:].strip()
+        else:
+            args_str = action_str[first_paren + 1 : last_paren].strip()
+            
         if not args_str:
             return tool_name, {}
-            
-        # Phân tích cú pháp các đối số sử dụng regex
-        # Hỗ trợ dạng key="value", key='value', key=value (số hoặc danh sách)
-        args = {}
-        # Regex tìm kiếm key = value
-        pattern = r"(\w+)\s*=\s*('[^']*'|\"[^\"]*\"|\[[^\]]*\]|[^,]+)"
-        for k, v in re.findall(pattern, args_str):
-            k = k.strip()
-            v = v.strip()
-            
-            # Giải mã chuỗi chuỗi trích xuất được
-            if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
-                args[k] = v[1:-1]
-            elif v.startswith("[") and v.endswith("]"):
-                # Danh sách: ví dụ ['VinWonders', 'Spa']
-                try:
-                    # Clean và parse list đơn giản
-                    list_items = []
-                    item_pattern = r"'([^']*)'|\"([^\"]*)\""
-                    for item_match in re.findall(item_pattern, v):
-                        item = item_match[0] or item_match[1]
-                        list_items.append(item)
-                    args[k] = list_items
-                except Exception:
-                    args[k] = []
-            else:
-                # Số hoặc Boolean
-                if v.lower() == "true":
-                    args[k] = True
-                elif v.lower() == "false":
-                    args[k] = False
-                else:
+
+        # 3. Phân tích cú pháp đối số sử dụng AST (Abstract Syntax Tree) để hỗ trợ hoàn hảo cấu trúc phức tạp
+        try:
+            # Wrap trong một hàm dummy để tạo biểu thức Python hợp lệ
+            tree = ast.parse(f"dummy({args_str})")
+            call_node = tree.body[0].value
+            args = {}
+            for kw in call_node.keywords:
+                args[kw.arg] = ast.literal_eval(kw.value)
+            return tool_name, args
+        except Exception as e:
+            # Fallback regex nếu AST parse thất bại (ví dụ: chuỗi bị cắt hoặc lỗi cú pháp nhẹ)
+            logger.log_event("AST_PARSING_FAILED", {"error": str(e), "args_str": args_str})
+            args = {}
+            pattern = r"(\w+)\s*=\s*('[^']*'|\"[^\"]*\"|\[[^\]]*\]|[^,]+)"
+            for k, v in re.findall(pattern, args_str):
+                k = k.strip()
+                v = v.strip()
+                if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+                    args[k] = v[1:-1]
+                elif v.startswith("[") and v.endswith("]"):
                     try:
-                        if "." in v:
-                            args[k] = float(v)
-                        else:
-                            args[k] = int(v)
-                    except ValueError:
-                        args[k] = v
+                        list_items = []
+                        item_pattern = r"'([^']*)'|\"([^\"]*)\""
+                        for item_match in re.findall(item_pattern, v):
+                            item = item_match[0] or item_match[1]
+                            list_items.append(item)
+                        args[k] = list_items
+                    except Exception:
+                        args[k] = []
+                else:
+                    if v.lower() == "true":
+                        args[k] = True
+                    elif v.lower() == "false":
+                        args[k] = False
+                    else:
+                        try:
+                            if "." in v:
+                                args[k] = float(v)
+                            else:
+                                args[k] = int(v)
+                        except ValueError:
+                            args[k] = v
+            return tool_name, args
                         
         return tool_name, args
 

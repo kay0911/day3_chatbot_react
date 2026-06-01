@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Render Final Answer
             if (data.answer) {
-                appendMessage(data.answer, "assistant");
+                appendMessage(data.answer, "assistant", data.usage);
                 
                 // Lưu vào lịch sử hội thoại trong phiên (Session Memory)
                 chatHistory.push({ role: "user", content: text });
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Append standard message in chat bubbles
-    function appendMessage(text, sender) {
+    function appendMessage(text, sender, usage = null) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("message", sender);
 
@@ -90,6 +90,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const formattedBody = document.createElement("div");
             formattedBody.innerHTML = formatMarkdown(text);
             messageDiv.appendChild(formattedBody);
+
+            // Render token usage if available
+            if (usage && (usage.total_tokens || usage.prompt_tokens || usage.completion_tokens)) {
+                const usageDiv = document.createElement("div");
+                usageDiv.classList.add("message-usage");
+                usageDiv.innerHTML = `
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; display: inline-block; vertical-align: middle;"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                    Tiêu thụ: <strong>${usage.total_tokens || 0}</strong> tokens (Prompt: ${usage.prompt_tokens || 0} | Completion: ${usage.completion_tokens || 0})
+                `;
+                messageDiv.appendChild(usageDiv);
+            }
         } else {
             messageDiv.innerText = text;
         }
@@ -98,26 +109,39 @@ document.addEventListener("DOMContentLoaded", () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Simple markdown compiler for chat representation
+    // Premium markdown compiler with marked.js & custom fallbacks
     function formatMarkdown(text) {
+        if (typeof marked !== 'undefined') {
+            try {
+                return marked.parse(text);
+            } catch (e) {
+                console.error("Marked parsing error:", e);
+            }
+        }
+        
+        // Beautiful fallback regex compiler
         let html = text;
         
-        // Escape HTML
+        // Escape HTML tags to prevent XSS except the ones we generate
         html = html
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;");
 
+        // Headers: ###, ##, #
+        html = html.replace(/^###\s+(.*)$/gm, "<h3>$1</h3>");
+        html = html.replace(/^##\s+(.*)$/gm, "<h2>$1</h2>");
+        html = html.replace(/^#\s+(.*)$/gm, "<h1>$1</h1>");
+
         // Bold
         html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-        // Unordered list
-        html = html.replace(/^\s*-\s+(.*)$/gm, "<li>$1</li>");
-        html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
+        // Horizontal Rule
+        html = html.replace(/^---\s*$/gm, "<hr>");
 
-        // Ordered list
-        html = html.replace(/^\s*(\d+)\.\s+(.*)$/gm, "<li>$2</li>");
-        html = html.replace(/(<li>.*<\/li>)/s, "<ol>$1</ol>");
+        // Unordered lists (- or *)
+        html = html.replace(/^\s*[-*]\s+(.*)$/gm, "<li>$1</li>");
+        html = html.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
 
         // Newlines to br
         html = html.replace(/\n/g, "<br>");
@@ -190,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.appendChild(header);
 
         const body = document.createElement("div");
-        body.classList.add("step-content");
+        body.classList.add("step-content", `${type}-content`);
         body.innerHTML = content;
         card.appendChild(body);
 

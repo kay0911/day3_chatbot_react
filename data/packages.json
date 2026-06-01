@@ -10,7 +10,8 @@
       "max_adults": 2,
       "max_children": 2,
       "includes": ["Room Only", "Private Beach Access", "Swimming Pool"],
-      "description": "Phòng Deluxe rộng rãi hướng biển tuyệt đẹp tại Vinpearl Resort Nha Trang. Thích hợp cho cặp đôi hoặc gia đình nhỏ."
+      "description": "Phòng Deluxe rộng rãi hướng biển tuyệt đẹp tại Vinpearl Resort Nha Trang. Thích hợp cho cặp đôi hoặc gia đình nhỏ.",
+      "blocked_dates": ["2026-06-05", "2026-06-06"]
     },
     {
       "id": "PKG-B",
@@ -22,7 +23,8 @@
       "max_adults": 2,
       "max_children": 2,
       "includes": ["Room", "Buffet Breakfast", "Private Beach Access", "Swimming Pool"],
-      "description": "Trọn gói phòng nghỉ hướng biển sang trọng và bữa sáng buffet tiêu chuẩn quốc tế tại Nhà hàng Imperial."
+      "description": "Trọn gói phòng nghỉ hướng biển sang trọng và bữa sáng buffet tiêu chuẩn quốc tế tại Nhà hàng Imperial.",
+      "blocked_dates": []
     },
     {
       "id": "PKG-C",
@@ -34,7 +36,8 @@
       "max_adults": 4,
       "max_children": 2,
       "includes": ["Room", "Full Board (3 Meals Buffet)", "VinWonders Ticket", "Private Pool", "Private Beach Access"],
-      "description": "Combo nghỉ dưỡng đẳng cấp cho gia đình 4 người tại Villa 2 phòng ngủ có hồ bơi riêng. Đã bao gồm ăn 3 bữa buffet mỗi ngày và vé vui chơi không giới hạn tại VinWonders Nha Trang."
+      "description": "Combo nghỉ dưỡng đẳng cấp cho gia đình 4 người tại Villa 2 phòng ngủ có hồ bơi riêng. Đã bao gồm ăn 3 bữa buffet mỗi ngày và vé vui chơi không giới hạn tại VinWonders Nha Trang.",
+      "blocked_dates": []
     },
     {
       "id": "PKG-D",
@@ -46,7 +49,8 @@
       "max_adults": 6,
       "max_children": 3,
       "includes": ["Room", "Buffet Breakfast", "VinWonders Ticket", "Private Pool", "Spa Discount 20%"],
-      "description": "Villa 3 phòng ngủ rộng lớn cho cả gia đình hoặc nhóm bạn. Bao gồm bữa sáng buffet sang trọng và vé tham quan VinWonders."
+      "description": "Villa 3 phòng ngủ rộng lớn cho cả gia đình hoặc nhóm bạn. Bao gồm bữa sáng buffet sang trọng và vé tham quan VinWonders.",
+      "blocked_dates": ["2026-06-06"]
     },
     {
       "id": "PKG-E",
@@ -58,7 +62,8 @@
       "max_adults": 4,
       "max_children": 2,
       "includes": ["Room", "Private Butler Service", "Private Yacht Transfer", "Full Board Fine Dining", "Unlimited Akoya Spa", "Private Beachside Jacuzzi"],
-      "description": "Trải nghiệm kỳ nghỉ hoàng gia siêu sang trọng tại Biệt thự Tổng Thống sát biển. Có quản gia riêng phục vụ 24/7, đưa đón bằng du thuyền, ẩm thực cao cấp và spa không giới hạn."
+      "description": "Trải nghiệm kỳ nghỉ hoàng gia siêu sang trọng tại Biệt thự Tổng Thống sát biển. Có quản gia riêng phục vụ 24/7, đưa đón bằng du thuyền, ẩm thực cao cấp và spa không giới hạn.",
+      "blocked_dates": []
     },
     {
       "id": "PKG-F",
@@ -70,7 +75,8 @@
       "max_adults": 2,
       "max_children": 2,
       "includes": ["Room Only", "Private Beach Access", "Garden Walkway"],
-      "description": "Lựa chọn nghỉ dưỡng tiết kiệm tuyệt vời với phòng Deluxe hướng vườn dừa xanh mát thơ mộng, không khí yên bình trong lành."
+      "description": "Lựa chọn nghỉ dưỡng tiết kiệm tuyệt vời với phòng Deluxe hướng vườn dừa xanh mát thơ mộng, không khí yên bình trong lành.",
+      "blocked_dates": []
     },
     {
       "id": "PKG-G",
@@ -82,7 +88,8 @@
       "max_adults": 2,
       "max_children": 2,
       "includes": ["Room", "Buffet Breakfast", "500k Spa Credit", "Executive Lounge Access", "Sunset Cocktail Hour"],
-      "description": "Phòng Suite thượng hạng hướng toàn cảnh vịnh Nha Trang. Đi kèm phiếu quà tặng Spa trị giá 500.000 VNĐ và quyền vào phòng chờ thương gia với tiệc trà chiều, cocktail hoàng hôn."
+      "description": "Phòng Suite thượng hạng hướng toàn cảnh vịnh Nha Trang. Đi kèm phiếu quà tặng Spa trị giá 500.000 VNĐ và quyền vào phòng chờ thương gia với tiệc trà chiều, cocktail hoàng hôn.",
+      "blocked_dates": ["2026-06-05", "2026-06-06"]
     },
     {
       "id": "PKG-H",
@@ -94,7 +101,8 @@
       "max_adults": 6,
       "max_children": 3,
       "includes": ["Room", "Full Board (3 Meals Buffet)", "VinWonders Ticket", "Hon Tam Mud Bath Voucher", "Private Pool", "Private Beach Access"],
-      "description": "Gói Villa 3 phòng ngủ đầy đủ nhất cho cả gia đình lớn. Đã bao gồm trọn gói ăn 3 bữa, vé vui chơi VinWonders và phiếu tắm bùn khoáng nóng thư giãn tại Đảo Hòn Tằm."
+      "description": "Gói Villa 3 phòng ngủ đầy đủ nhất cho cả gia đình lớn. Đã bao gồm trọn gói ăn 3 bữa, vé vui chơi VinWonders và phiếu tắm bùn khoáng nóng thư giãn tại Đảo Hòn Tằm.",
+      "blocked_dates": []
     },
     {
       "id": "PKG-I",
@@ -106,7 +114,8 @@
       "max_adults": 2,
       "max_children": 2,
       "includes": ["Room", "Buffet Breakfast", "Private Beach Access", "Swimming Pool"],
-      "description": "Phòng nghỉ Deluxe hướng vườn yên tĩnh kèm bữa sáng buffet tiêu chuẩn Á-Âu thanh lịch mỗi sáng."
+      "description": "Phòng nghỉ Deluxe hướng vườn yên tĩnh kèm bữa sáng buffet tiêu chuẩn Á-Âu thanh lịch mỗi sáng.",
+      "blocked_dates": ["2026-06-05"]
     }
   ],
   "attractions": [
@@ -199,7 +208,48 @@
       "type": "Restaurant",
       "location": "72-74 Trần Phú, Lộc Thọ, Nha Trang",
       "description": "Câu lạc bộ bãi biển mang phong cách Địa Trung Hải sôi động trên đường Trần Phú. Phục vụ món ăn Ý, hải sản nướng, quầy bar sát biển ngoài trời với nhạc DJ sống động về đêm.",
-      "distance": "6 km (Đi tàu vào đất liền)"
+      "distance": "6 km (Đi tàu vào đất liền)",
+      "target_audience": "Người lớn (Cặp đôi, nhóm bạn muốn trải nghiệm nightlife)"
+    },
+    {
+      "name": "Lâu đài trò chơi trong nhà & Thế giới Kẹo ngọt",
+      "type": "Amusement Park / Kid Zone",
+      "location": "Phân khu Cổ tích, VinWonders Nha Trang",
+      "description": "Thế giới trò chơi trong nhà khổng lồ dưới lòng lâu đài nguy nga. Bao gồm khu vườn kẹo ngọt, nhà phao liên hoàn, rạp chiếu phim 4D/5D, hàng trăm máy chơi game hiện đại và khu vực vui chơi an toàn tuyệt đối cho trẻ nhỏ và em bé sơ sinh.",
+      "distance": "0 km (Trong VinWonders)",
+      "target_audience": "Trẻ nhỏ (Trẻ em dưới 10 tuổi, gia đình có bé nhỏ)"
+    },
+    {
+      "name": "Vườn thú bán hoang dã King's Garden",
+      "type": "Zoo / Nature",
+      "location": "VinWonders Nha Trang, Đảo Hòn Tre",
+      "description": "Vườn thú mở duy nhất tại Nha Trang, nơi bảo tồn hàng chục loài động vật quý hiếm thế giới: Hổ trắng Bengal, hồng hạc Mỹ, hươu cao cổ, vượn cáo đuôi khoang. Có show biểu diễn chim nghệ thuật độc đáo lúc 11:30 và 15:30 hàng ngày, cực kỳ lôi cuốn các bé học hỏi thế giới tự nhiên.",
+      "distance": "0 km (Trong VinWonders)",
+      "target_audience": "Trẻ nhỏ và Gia đình (Trải nghiệm giáo dục thế giới tự nhiên cho bé)"
+    },
+    {
+      "name": "Cung điện Hải Vương (Thủy cung khổng lồ)",
+      "type": "Aquarium",
+      "location": "VinWonders Nha Trang, Đảo Hòn Tre",
+      "description": "Thủy cung quy mô lớn hình rùa khổng lồ ngự trị bờ vịnh. Khám phá đường hầm đại dương dài gần 100m dưới lòng nước sâu, ngắm nàng tiên cá biểu diễn biểu cảm, xem thợ lặn cho cá mập ăn. Địa điểm yêu thích số 1 của tất cả trẻ nhỏ khi đến Vinpearl.",
+      "distance": "0 km (Trong VinWonders)",
+      "target_audience": "Trẻ nhỏ và Gia đình (Mọi lứa tuổi)"
+    },
+    {
+      "name": "Đồi thực vật Đạn Hoa (World Garden)",
+      "type": "Nature / Sightseeing",
+      "location": "Đỉnh đồi VinWonders Nha Trang",
+      "description": "Bộ sưu tập hoa năm châu quy tụ trong các nhà kính khổng lồ ôn đới và sa mạc. Chiêm ngưỡng vườn xương rồng gai góc, vườn hồng kiêu sa, hay vườn thiền Nhật Bản tĩnh lặng với hồ cá Koi rực rỡ. Không gian thơ mộng để người lớn dạo bộ thư thái và lưu lại các bức hình kỷ niệm lãng mạn.",
+      "distance": "0.2 km (Trong VinWonders)",
+      "target_audience": "Người lớn (Cặp đôi, người trung niên yêu hoa, chụp hình check-in)"
+    },
+    {
+      "name": "Vịnh phao nổi khổng lồ (Splash Bay)",
+      "type": "Water Park / Adventure",
+      "location": "Công viên nước VinWonders Nha Trang",
+      "description": "Công viên phao nổi trên biển lớn thứ 2 thế giới rộng hơn 4.200m2. Bao gồm các chướng ngại vật dưới nước thử thách lòng dũng cảm, trò chơi leo núi, cầu trượt nước đầy phấn khích trên vịnh biển mát lạnh.",
+      "distance": "0.1 km (Trong VinWonders)",
+      "target_audience": "Người lớn và Trẻ em lớn (Thích hợp cho nhóm bạn trẻ, người năng động)"
     }
   ]
 }

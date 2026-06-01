@@ -1,6 +1,7 @@
 import json
 import os
 from typing import List, Dict, Any, Optional
+from datetime import datetime, timedelta
 
 # Path to the mock database
 DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data", "packages.json")
@@ -15,9 +16,33 @@ def load_data() -> Dict[str, Any]:
     except Exception:
         return {"packages": [], "attractions": []}
 
+def is_available(blocked_dates: List[str], check_in: str, check_out: str) -> bool:
+    """Kiểm tra xem phòng có trống trong suốt thời gian lưu trú từ check_in đến check_out hay không."""
+    if not check_in or not check_out:
+        return True
+        
+    try:
+        # Trích xuất và định dạng ngày (YYYY-MM-DD)
+        # Hỗ trợ xóa khoảng trắng và ký tự thừa
+        start_date = datetime.strptime(check_in.strip(), "%Y-%m-%d").date()
+        end_date = datetime.strptime(check_out.strip(), "%Y-%m-%d").date()
+        
+        if end_date <= start_date:
+            return False
+            
+        current = start_date
+        while current < end_date:
+            date_str = current.strftime("%Y-%m-%d")
+            if date_str in blocked_dates:
+                return False
+            current += timedelta(days=1)
+        return True
+    except Exception:
+        return True # Trả về True nếu lỗi định dạng để tránh chặn nhầm
+
 def search_vinpearl_packages(location: str = "Nha Trang", check_in: str = "", check_out: str = "", adults: int = 2, children: int = 0) -> List[Dict[str, Any]]:
     """
-    Tìm kiếm các gói nghỉ dưỡng (combo) tại Vinpearl Nha Trang phù hợp với số lượng khách (người lớn và trẻ em).
+    Tìm kiếm các gói nghỉ dưỡng (combo) tại Vinpearl Nha Trang phù hợp với số lượng khách (người lớn và trẻ em) và còn trống trong khoảng ngày yêu cầu.
     
     Args:
         location: Địa điểm tìm kiếm (ví dụ: 'Nha Trang').
@@ -39,13 +64,15 @@ def search_vinpearl_packages(location: str = "Nha Trang", check_in: str = "", ch
             
         # Lọc theo sức chứa tối đa
         if adults <= pkg.get("max_adults", 99) and children <= pkg.get("max_children", 99):
-            matching_packages.append(pkg)
+            # Kiểm tra xem phòng có bị kẹt ngày bận (blocked_dates) nào không
+            if is_available(pkg.get("blocked_dates", []), check_in, check_out):
+                matching_packages.append(pkg)
             
     return matching_packages
 
 def search_rooms(location: str = "Nha Trang", min_price: float = 0, max_price: float = 99999999, check_in: str = "", check_out: str = "", adults: int = 2, children: int = 0) -> List[Dict[str, Any]]:
     """
-    Tìm kiếm các gói phòng trong khoảng giá từ min_price đến max_price tại địa điểm mong muốn và có sức chứa phù hợp.
+    Tìm kiếm các gói phòng trong khoảng giá từ min_price đến max_price tại địa điểm mong muốn, có sức chứa phù hợp và lịch phòng trống.
     
     Args:
         location: Địa điểm tìm kiếm (ví dụ: 'Nha Trang').
@@ -57,7 +84,7 @@ def search_rooms(location: str = "Nha Trang", min_price: float = 0, max_price: f
         children: Số trẻ em.
         
     Returns:
-        Danh sách các gói phòng/combo trong tầm giá và có đủ sức chứa.
+        Danh sách các gói phòng/combo trong tầm giá, sức chứa và ngày đặt còn trống.
     """
     data = load_data()
     matching_rooms = []
@@ -69,13 +96,15 @@ def search_rooms(location: str = "Nha Trang", min_price: float = 0, max_price: f
         price = pkg.get("price_per_night", 0)
         if min_price <= price <= max_price:
             if adults <= pkg.get("max_adults", 99) and children <= pkg.get("max_children", 99):
-                matching_rooms.append(pkg)
+                # Kiểm tra lịch trống phòng
+                if is_available(pkg.get("blocked_dates", []), check_in, check_out):
+                    matching_rooms.append(pkg)
                 
     return matching_rooms
 
 def search_nearby_attractions(location: str = "Nha Trang", attraction_type: str = "") -> List[Dict[str, Any]]:
     """
-    Tìm kiếm các địa điểm vui chơi, ăn uống, nhà hàng, spa xung quanh khu vực.
+    Tìm kiếm các địa điểm vui chơi, ăn uống, nhà hàng, spa xung quanh khu vực Nha Trang/Hòn Tre.
     
     Args:
         location: Khu vực tìm kiếm (ví dụ: 'Nha Trang' hoặc 'Hòn Tre').
@@ -95,7 +124,36 @@ def search_nearby_attractions(location: str = "Nha Trang", attraction_type: str 
             continue
             
         if attraction_type:
-            if attraction_type.lower() in attr.get("type", "").lower() or attraction_type.lower() in attr.get("name", "").lower():
+            attr_type_lower = attr.get("type", "").lower()
+            attr_name_lower = attr.get("name", "").lower()
+            req_type_lower = attraction_type.lower()
+            
+            # Phân tích và ánh xạ từ khóa thông minh (Fuzzy / Semantic Matching)
+            is_match = False
+            # 1. Trùng khớp chuỗi con trực tiếp
+            if req_type_lower in attr_type_lower or req_type_lower in attr_name_lower:
+                is_match = True
+            # 2. Xử lý các từ khóa tiếng Việt thông dụng
+            elif "show" in req_type_lower or "diễn" in req_type_lower or "ca nhạc" in req_type_lower:
+                if "show" in attr_type_lower or "show" in attr_name_lower:
+                    is_match = True
+            elif "spa" in req_type_lower or "trị liệu" in req_type_lower or "tắm" in req_type_lower or "mud" in req_type_lower:
+                if "spa" in attr_type_lower or "spa" in attr_name_lower:
+                    is_match = True
+            elif "ăn" in req_type_lower or "nhà hàng" in req_type_lower or "ẩm thực" in req_type_lower or "uống" in req_type_lower or "restaurant" in req_type_lower:
+                if "restaurant" in attr_type_lower or "restaurant" in attr_name_lower or "dining" in attr_type_lower:
+                    is_match = True
+            elif "chơi" in req_type_lower or "giải trí" in req_type_lower or "công viên" in req_type_lower or "park" in req_type_lower:
+                if "park" in attr_type_lower or "amusement" in attr_type_lower or "entertainment" in attr_type_lower:
+                    is_match = True
+            elif "văn hóa" in req_type_lower or "chùa" in req_type_lower or "tháp" in req_type_lower or "di tích" in req_type_lower or "cultural" in req_type_lower:
+                if "cultural" in attr_type_lower or "cultural" in attr_name_lower:
+                    is_match = True
+            elif "mua" in req_type_lower or "chợ" in req_type_lower or "shopping" in req_type_lower:
+                if "shopping" in attr_type_lower or "shopping" in attr_name_lower:
+                    is_match = True
+                    
+            if is_match:
                 matching_attractions.append(attr)
         else:
             matching_attractions.append(attr)
