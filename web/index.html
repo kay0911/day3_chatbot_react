@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinpearl Nha Trang - ReAct Chatbot Agent</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: rgba(15, 23, 42, 0.65);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-teal: #0d9488;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #fbbf24;
+            --gradient-primary: linear-gradient(135deg, #0d9488, #06b6d4);
+            --gradient-thought: linear-gradient(135deg, #1e293b, #334155);
+            --gradient-action: linear-gradient(135deg, #1e1b4b, #312e81);
+            --gradient-observation: linear-gradient(135deg, #064e3b, #065f46);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .header-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 2px 6px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            -webkit-text-fill-color: initial;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-badge {
+            background: rgba(13, 148, 136, 0.15);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            color: #2dd4bf;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center; /* Căn giữa khung chat duy nhất */
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        /* Dual Panel Styles */
+        .panel {
+            flex: 1;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+            min-height: 0; /* Sửa lỗi tràn màn hình Flexbox */
+        }
+
+        .chat-panel {
+            flex: 1;
+            max-width: 900px; /* Chiều rộng vàng cho trải nghiệm chat tối ưu */
+            width: 100%;
+        }
+
+        .agent-panel {
+            display: none !important; /* Ẩn hoàn toàn bảng điều khiển ReAct */
+        }
+
+        .panel-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-header h2 svg {
+            color: var(--accent-teal);
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        .chat-messages::-webkit-scrollbar,
+        .steps-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-track,
+        .steps-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages::-webkit-scrollbar-thumb,
+        .steps-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb:hover,
+        .steps-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: var(--gradient-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.25);
+        }
+
+        .message.assistant {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.assistant h1,
+        .message.assistant h2,
+        .message.assistant h3,
+        .message.assistant h4,
+        .message.assistant h5,
+        .message.assistant h6 {
+            font-family: 'Outfit', sans-serif;
+            color: #2dd4bf;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .message.assistant p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .message.assistant ul, .message.assistant ol {
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .message.assistant li {
+            margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+
+        /* Tables styling inside chat bubbles */
+        .message.assistant table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .message.assistant th, .message.assistant td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .message.assistant th {
+            background: rgba(13, 148, 136, 0.25);
+            color: #2dd4bf;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .message.assistant tr:last-child td {
+            border-bottom: none;
+        }
+
+        .message.assistant tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Token Usage Info Styling */
+        .message-usage {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.8rem;
+            padding-top: 0.6rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.2px;
+        }
+
+        .message-usage strong {
+            color: var(--accent-cyan);
+            margin: 0 3px;
+            font-weight: 600;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            align-self: flex-start;
+            margin-top: 5px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Suggestions Row */
+        .suggestions {
+            display: flex;
+            gap: 10px;
+            padding: 0.5rem 1.5rem;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+        }
+
+        .suggestions::-webkit-scrollbar {
+            display: none;
+        }
+
+        .suggestion-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-btn:hover {
+            background: rgba(13, 148, 136, 0.1);
+            border-color: var(--accent-teal);
+            color: var(--accent-cyan);
+            transform: translateY(-1.5px);
+        }
+
+        /* Chat Input Area */
+        .chat-input-container {
+            padding: 1.2rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 10px rgba(13, 148, 136, 0.25);
+        }
+
+        .send-btn {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(6, 182, 212, 0.35);
+        }
+
+        .send-btn svg {
+            fill: white;
+            transition: transform 0.2s ease;
+        }
+
+        .send-btn:hover svg {
+            transform: translate(2px, -2px);
+        }
+
+        /* Agent Telemetry Steps Panel */
+        .steps-container {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .empty-telemetry {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 2rem;
+            gap: 15px;
+        }
+
+        .empty-telemetry svg {
+            width: 48px;
+            height: 48px;
+            opacity: 0.3;
+            color: var(--accent-cyan);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+
+        .step-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .step-header {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step-header.thought {
+            background: rgba(30, 41, 59, 0.7);
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .step-header.action {
+            background: rgba(49, 46, 129, 0.5);
+            color: #818cf8;
+            border-bottom: 1px solid rgba(129, 140, 248, 0.1);
+        }
+
+        .step-header.observation {
+            background: rgba(6, 95, 70, 0.5);
+            color: #34d399;
+            border-bottom: 1px solid rgba(52, 211, 153, 0.1);
+        }
+
+        .step-content {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+
+        .step-content.action-content {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #818cf8;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid #818cf8;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 4px 0;
+            overflow-x: auto;
+        }
+
+        .step-content.observation-content {
+            max-height: 240px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.35);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #34d399;
+            border-left: 3px solid #0d9488;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 4px 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .step-content code {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #e2e8f0;
+        }
+
+        .step-card-group {
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .step-group-title {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px 16px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            .container {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+            }
+            .panel {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            🏖️ Vinpearl Travel Agent <span>ReAct Loop</span>
+        </div>
+        <div class="badge-container">
+            <div class="status-badge">Gemini Model Active</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- CHAT INTERFACE PANEL -->
+        <div class="panel chat-panel">
+            <div class="panel-header">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    Tư vấn Combo & Đặt phòng
+                </h2>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant">
+                    <h3>Xin chào quý khách! 👋</h3>
+                    <p>Tôi là trợ lý ảo hỗ trợ đặt phòng và thiết kế lịch trình chuyên nghiệp của **Vinpearl Nha Trang**.</p>
+                    <p>Tôi sử dụng mô hình lập luận ReAct để hỗ trợ quý khách thực hiện các tác vụ phức tạp như:</p>
+                    <ul>
+                        <li>Tìm kiếm phòng & biệt thự theo tầm giá mong muốn</li>
+                        <li>Lọc và chọn combo thông minh (Có ăn sáng, ăn 3 bữa, hay vé vui chơi VinWonders)</li>
+                        <li>Đề xuất địa điểm vui chơi, ẩm thực, spa xung quanh đảo Hòn Tre</li>
+                        <li>Tự động lên lịch trình du lịch trọn gói chi tiết theo ngày</li>
+                    </ul>
+                    <p>Tôi có thể giúp gì cho kỳ nghỉ của bạn hôm nay?</p>
+                </div>
+            </div>
+
+            <!-- Predefined Suggestions -->
+            <div class="suggestions">
+                <button class="suggestion-btn" onclick="sendSuggestion('Tìm phòng dưới 5 triệu/đêm cho 2 người lớn ở Vinpearl Nha Trang')">🔍 Phòng dưới 5tr</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('Kịch bản ví dụ: Combo Vinpearl Nha Trang 3 ngày 2 đêm cuối tuần sau cho 2 lớn 2 bé có vé VinWonders')">⭐ Combo 3N2Đ Gia đình</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('Có những địa điểm spa hoặc show diễn nào nổi bật xung quanh Vinpearl?')">🎭 Show & Spa xung quanh</button>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Nhập câu hỏi hoặc yêu cầu đặt phòng của bạn..." autocomplete="off">
+                <button class="send-btn" id="send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- REACT TELEMETRY PANEL -->
+        <div class="panel agent-panel">
+            <div class="panel-header">
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    ReAct Thought Visualizer (Console)
+                </h2>
+            </div>
+            
+            <div class="steps-container" id="steps-container">
+                <div class="empty-telemetry" id="empty-telemetry">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <p>Luồng suy nghĩ và kết quả gọi công cụ (Thought-Action-Observation) của Agent sẽ hiển thị trực quan tại đây khi bạn bắt đầu trò chuyện.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script connection -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
